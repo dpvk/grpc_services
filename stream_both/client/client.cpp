@@ -27,20 +27,26 @@ class ApiService {
     auto rwr = stub_->action(&ctx);
 
     std::thread rth([&] {
-      while (rwr->Read(&rp)) {
-        std::cout << " - " << rp.message() << std::endl;
+      int i = 0;
+      while (i++ < count && rwr->Read(&rp)) {
+        std::cout << "RECV " << rp.message() << std::endl;
+        std::cout << "Current read " << i << std::endl;
       }
+      std::cout << "Read loop stopped" << std::endl;
     });
     std::thread wth([&] {
-      for (int i = 0; i < 100; i++) {
-        rq.set_message("Client");
+      for (int i = 0; i < count; i++) {
+        rq.set_message("Client " + std::to_string(i));
+        std::cout << "SEND " << rq.message() << std::endl;
         rwr->Write(rq);
         std::this_thread::sleep_for(std::chrono::seconds(1));
       }
+      std::cout << "Write loop stopped" << std::endl;
+      rwr->WritesDone();
     });
-
-    rth.join();
     wth.join();
+    rth.join();
+    std::cout << "Threads done" << std::endl;
     // Чтение результатов по 1
 
     // Завершение запроса
