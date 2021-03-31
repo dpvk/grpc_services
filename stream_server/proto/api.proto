@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+
+package STRM;
+
+
+service MultiReq {
+  rpc action (Request) returns (stream Reply) {}
+}
+
+
+message Request {
+  string message = 1;
+  int32 pause = 2;
+  int32 num_answers = 3;
+}
+
+message Reply {
+  string message = 1;
+}
+

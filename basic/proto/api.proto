@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+
+package BSC;
+
+
+service Processor {
+  rpc action (Request) returns (Reply) {}
+}
+
+
+message Request {
+  string message = 1;
+}
+
+message Reply {
+  string message = 1;
+}
+
